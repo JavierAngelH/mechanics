@@ -4,9 +4,9 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mechanicshop.components.DataEntryLayout;
 import com.mechanicshop.components.SmsLayout;
 import com.mechanicshop.components.TableLayout;
-import com.mechanicshop.service.SmsSenderService;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -33,6 +33,9 @@ public class MechanicShopView extends VerticalLayout implements View {
 	@Autowired
 	TableLayout tableLayout;
 	
+	@Autowired
+	DataEntryLayout dataEntryLayout;
+	
 
 	@PostConstruct
     void init() {
@@ -58,8 +61,16 @@ public class MechanicShopView extends VerticalLayout implements View {
 			public void menuSelected(MenuItem selectedItem) {
 				String selectedOption = selectedItem.getText();
 				switch (selectedOption) {
+				
+				case "Data Entry":
+					removeComponent(tableLayout);
+					removeComponent(smsLayout);
+					addComponent(dataEntryLayout);
+					break;
+				
 				case "SMS":
 					removeComponent(tableLayout);
+					removeComponent(dataEntryLayout);
 					addComponent(smsLayout);
 					setExpandRatio(smsLayout, 3);
 					smsLayout.fillInbox();
@@ -67,6 +78,7 @@ public class MechanicShopView extends VerticalLayout implements View {
 				default:
 					tableLayout.fillTable(selectedOption);
 					removeComponent(smsLayout);
+					removeComponent(dataEntryLayout);
 					addComponent(tableLayout);
 					setExpandRatio(tableLayout, 3);
 					break;
@@ -83,6 +95,7 @@ public class MechanicShopView extends VerticalLayout implements View {
 		barmenu.addItem("Cars Out", FontAwesome.ARROW_LEFT, mycommand);
 		barmenu.addItem("Cars Ready", FontAwesome.CAR, mycommand);
 		barmenu.addItem("SMS", FontAwesome.ENVELOPE, mycommand);
+		barmenu.addItem("Data Entry", FontAwesome.ARCHIVE, mycommand);
 	}
 
 

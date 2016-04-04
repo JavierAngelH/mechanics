@@ -2,21 +2,23 @@ package com.mechanicshop.components;
 
 import javax.annotation.PostConstruct;
 
+import tm.kod.widgets.numberfield.NumberField;
+
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.FormLayout;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.PopupDateField;
-import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
+import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.PopupDateField;
+import com.vaadin.ui.TextArea;
+import com.vaadin.ui.TextField;
+import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
-
-import tm.kod.widgets.numberfield.NumberField;
 
 
 @SpringComponent
@@ -99,21 +101,84 @@ buildLayout();
 		tfRemarks.setRequired(true);
 		tfRemarks.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-	
-		  `Rebuilder` varchar(20) DEFAULT NULL,
-		  `Installer` varchar(20) DEFAULT NULL,
-		  `FirstCheckBy` varchar(100) DEFAULT NULL,
-		  `SecondCheckBy` varchar(100) DEFAULT NULL,
-		  `FirstCheckDate` date DEFAULT NULL,
-		  `SecondCheckDate` date DEFAULT NULL,
-		  `Media` text,
-		  `Media2` text,
-		  `ReferedBy` varchar(20) DEFAULT NULL,
-		  `WarrantyLimit` varchar(5) DEFAULT NULL,
-		  `Warranty` varchar(5) DEFAULT NULL,
-		  `SMS` varchar(3) DEFAULT 'NO',
-		  `Comeback` varchar(3) DEFAULT 'YES',
+		final TextField tfRebuilder = new TextField("Rebuilder");
+		tfRebuilder.setRequired(true);
+		tfRebuilder.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
+
+		final TextField tfInstaller = new TextField("Installer");
+		tfInstaller.setRequired(true);
+		tfInstaller.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		
+		final TextField tfFirstCheckBy = new TextField("FirstCheckBy");
+		tfFirstCheckBy.setRequired(true);
+		tfFirstCheckBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		
+		final TextField tfSecondCheckBy = new TextField("SecondCheckBy");
+		tfSecondCheckBy.setRequired(true);
+		tfSecondCheckBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		
+		final PopupDateField dfFirstCheckDate = new PopupDateField("FirstCheckDate");
+		dfFirstCheckDate.setImmediate(true);
+		dfFirstCheckDate.addStyleName(ValoTheme.DATEFIELD_TINY);
+		dfFirstCheckDate.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
+		dfFirstCheckDate.setInputPrompt("Select");
+		dfFirstCheckDate.setTextFieldEnabled(false);
+		
+		final PopupDateField dfSecondCheckDate = new PopupDateField("SecondCheckDate");
+		dfSecondCheckDate.setImmediate(true);
+		dfSecondCheckDate.addStyleName(ValoTheme.DATEFIELD_TINY);
+		dfSecondCheckDate.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
+		dfSecondCheckDate.setInputPrompt("Select");
+		dfSecondCheckDate.setTextFieldEnabled(false);
+	
+		
+		final TextArea taMedia = new TextArea("Media");
+		taMedia.setRequired(true);
+		taMedia.setStyleName(ValoTheme.TEXTFIELD_TINY);
+
+		
+		final TextArea taMedia2 = new TextArea("Media2");
+		taMedia2.setRequired(true);
+		taMedia2.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		
+	
+		final TextField tfReferedBy = new TextField("ReferedBy");
+		tfReferedBy.setRequired(true);
+		tfReferedBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		
+		final TextField tfWarrantyLimit = new TextField("WarrantyLimit");
+		tfWarrantyLimit.setRequired(true);
+		tfWarrantyLimit.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		
+
+		final NativeSelect nsWarranty = new NativeSelect("Warranty");
+		nsWarranty.setRequired(true);
+		nsWarranty.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		nsWarranty.addItems("Yes", "No");
+		
+		
+		final NativeSelect nsSMS = new NativeSelect("SMS");
+		nsSMS.setRequired(true);
+		nsSMS.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		nsSMS.addItems("Yes", "No");
+		
+		
+		final NativeSelect nsComeback = new NativeSelect("Comeback");
+		nsComeback.setRequired(true);
+		nsComeback.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		nsComeback.addItems("Yes", "No");
+		
+	
+		formLayout.addComponents(tfTag, tfPhone, tfName, tfVehicle, tfLicensePlate, tfVin, dfInShop, dfOutShop,
+				tfStatus, tfMileage, tfPicked, tfPayment, tfRemarks, tfRebuilder, tfInstaller, tfFirstCheckBy,
+				tfSecondCheckBy, dfFirstCheckDate, dfSecondCheckDate, taMedia, taMedia2, tfReferedBy,
+				tfWarrantyLimit, nsWarranty, nsSMS, nsComeback);
+		
+
+
+		
+
 		
 		HorizontalLayout layoutButtons = new HorizontalLayout();
 		layoutButtons.setMargin(false);
