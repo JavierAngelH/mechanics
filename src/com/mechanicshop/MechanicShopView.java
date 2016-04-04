@@ -58,25 +58,6 @@ public class MechanicShopView extends VerticalLayout implements View {
 			public void menuSelected(MenuItem selectedItem) {
 				String selectedOption = selectedItem.getText();
 				switch (selectedOption) {
-				case "Cars In":
-					tableLayout.fillTable(selectedOption);
-					removeComponent(smsLayout);
-					addComponent(tableLayout);
-					setExpandRatio(tableLayout, 3);
-					break;
-				case "Cars Out":
-					tableLayout.fillTable(selectedOption);
-					removeComponent(smsLayout);
-					addComponent(tableLayout);
-					setExpandRatio(tableLayout, 3);
-					break;
-				case "Cars Ready":
-					tableLayout.fillTable(selectedOption);
-					removeComponent(smsLayout);
-					addComponent(tableLayout);
-					setExpandRatio(tableLayout, 3);
-					break;
-
 				case "SMS":
 					removeComponent(tableLayout);
 					addComponent(smsLayout);
@@ -84,7 +65,12 @@ public class MechanicShopView extends VerticalLayout implements View {
 					smsLayout.fillInbox();
 					break;
 				default:
+					tableLayout.fillTable(selectedOption);
+					removeComponent(smsLayout);
+					addComponent(tableLayout);
+					setExpandRatio(tableLayout, 3);
 					break;
+				
 				}
 				
 			}
@@ -92,6 +78,8 @@ public class MechanicShopView extends VerticalLayout implements View {
 
 		// Put some items in the menu
 		barmenu.addItem("Cars In", FontAwesome.ARROW_RIGHT, mycommand);
+		barmenu.addItem("Cars Comeback", FontAwesome.ARROW_CIRCLE_RIGHT, mycommand);
+		barmenu.addItem("Cars Pending", FontAwesome.CLOCK_O, mycommand);
 		barmenu.addItem("Cars Out", FontAwesome.ARROW_LEFT, mycommand);
 		barmenu.addItem("Cars Ready", FontAwesome.CAR, mycommand);
 		barmenu.addItem("SMS", FontAwesome.ENVELOPE, mycommand);

@@ -21,6 +21,9 @@ import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
+import com.vaadin.event.ItemClickEvent;
+import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.Alignment;
@@ -30,12 +33,12 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
+import com.vaadin.ui.Form;
+import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout;
 import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.Table;
 import com.vaadin.ui.TableFieldFactory;
@@ -91,8 +94,6 @@ public class TableLayout extends VerticalLayout {
 		try {
 			switch (option) {
 			case "Cars In":
-
-				;
 				container = new SQLContainer(new TableQuery("cars_in", connectionPool));
 				btnSendSMS.setVisible(false);
 				container.setAutoCommit(true);
@@ -111,6 +112,21 @@ public class TableLayout extends VerticalLayout {
 				searchTextField.clear();
 				break;
 
+			case "Cars Comeback":
+				container = new SQLContainer(new TableQuery("cars_comeback", connectionPool));
+				btnSendSMS.setVisible(true);
+				container.setAutoCommit(true);
+				searchTextField.clear();
+				break;
+	
+			case "Cars Pending":
+				container = new SQLContainer(new TableQuery("cars_pending", connectionPool));
+				btnSendSMS.setVisible(true);
+				container.setAutoCommit(true);
+				searchTextField.clear();
+				break;
+
+				
 			default:
 				break;
 			}
@@ -121,8 +137,8 @@ public class TableLayout extends VerticalLayout {
 		table.setContainerDataSource(container);
 		table.setColumnHeaders(new String[] { "No", "Tag", "Phone", "Name", "Vehicle", "License Plate", "Vin",
 				"In Shop", "Out Shop", "Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer",
-				"First Check By", "Second Check By", "First Check Date", "Second Check Date", "Media", "Refered By",
-				"Warranty Limit", "Warranty", "SMS Sent", "" });
+				"First Check By", "Second Check By", "First Check Date", "Second Check Date", "Media" , "Media 2", "Refered By",
+				"Warranty Limit", "Warranty", "SMS Sent", "Comeback", "" });
 
 		table.setColumnWidth("", 35);
 		table.setColumnWidth("No", 60);
@@ -134,27 +150,33 @@ public class TableLayout extends VerticalLayout {
 		table.setColumnWidth("Vin", 145);
 		table.setColumnWidth("InShop", 90);
 		table.setColumnWidth("OutShop", 90);
-		table.setColumnWidth("Status", 90);
+		table.setColumnWidth("Status", 120);
 		table.setColumnWidth("Mileage", 90);
 		table.setColumnWidth("Picked", 60);
 		table.setColumnWidth("Rebuilder", 150);
 		table.setColumnWidth("Installer", 150);
 		table.setColumnWidth("ReferedBy", 150);
+
+		table.setColumnWidth("Media", 300);
+
+		table.setColumnWidth("Media2", 300);
 		table.setColumnWidth("WarrantyLimit", 120);
 		table.setColumnWidth("Warranty", 90);
 		table.setColumnWidth("FirstCheckDate", 120);
 		table.setColumnWidth("SecondCheckDate", 150);
 		table.setColumnWidth("SMS", 85);
+		table.setColumnWidth("Comeback", 85);
 		table.setVisibleColumns("", "No", "Tag", "Phone", "Name", "Vehicle", "LicensePlate", "Vin", "InShop", "OutShop",
 				"Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer", "FirstCheckBy",
-				"SecondCheckBy", "FirstCheckDate", "SecondCheckDate", "Media", "ReferedBy", "WarrantyLimit",
-				"Warranty");
+				"SecondCheckBy", "FirstCheckDate", "SecondCheckDate", "Media", "Media2", "ReferedBy", "WarrantyLimit",
+				"Warranty", "Comeback");
 		if (option.equals("Cars Ready"))
 			table.setVisibleColumns("", "No", "Tag", "Phone", "Name", "Vehicle", "LicensePlate", "Vin", "InShop",
 					"OutShop", "Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer",
-					"FirstCheckBy", "SecondCheckBy", "FirstCheckDate", "SecondCheckDate", "Media", "ReferedBy",
-					"WarrantyLimit", "Warranty", "SMS");
+					"FirstCheckBy", "SecondCheckBy", "FirstCheckDate", "SecondCheckDate", "Media", "Media2", "ReferedBy",
+					"WarrantyLimit", "Warranty", "Comeback", "SMS");
 		table.setTableFieldFactory(tableFactory);
+		table.addItemClickListener(tableClickListener);
 
 	}
 
@@ -188,7 +210,7 @@ public class TableLayout extends VerticalLayout {
 				return field;
 			} else if (column.equals("Status")) {
 				NativeSelect field = new NativeSelect();
-				field.addItems("In", "Out", "Ready");
+				field.addItems("In", "Out", "Pending", "Ready", "Comeback");
 				field.setImmediate(true);
 				field.addValueChangeListener(new ValueChangeListener() {
 
@@ -215,10 +237,16 @@ public class TableLayout extends VerticalLayout {
 				field.addItems("YES", "NO");
 				field.setImmediate(true);
 				return field;
-			} else {
+			} 
+			else if (column.equals("Comeback")) {
+				NativeSelect field = new NativeSelect();
+				field.addItems("YES", "NO");
+				field.setImmediate(true);
+				return field;
+			} 
+			else {
 				TextField field = new TextField(column);
 				field.setData(itemId);
-
 				field.setNullRepresentation("");
 				field.setImmediate(true);
 				field.addStyleName(ValoTheme.TEXTFIELD_TINY);
@@ -249,6 +277,7 @@ public class TableLayout extends VerticalLayout {
 						new Like("FirstCheckBy", "%" + text + "%", false),
 						new Like("SecondCheckBy", "%" + text + "%", false), new Like("Media", "%" + text + "%", false),
 						new Like("ReferedBy", "%" + text + "%", false),
+						new Like("Media2", "%" + text + "%", false),
 						new Like("WarrantyLimit", "%" + text + "%", false),
 						new Like("Warranty", "%" + text + "%", false), new Like("No", "%" + text + "%", false),
 						new Like("Tag", "%" + text + "%", false), new Like("Mileage", "%" + text + "%", false))
@@ -278,6 +307,8 @@ public class TableLayout extends VerticalLayout {
 									new Like("FirstCheckBy", "%" + text + "%", false),
 									new Like("SecondCheckBy", "%" + text + "%", false),
 									new Like("Media", "%" + text + "%", false),
+
+									new Like("Media2", "%" + text + "%", false),
 									new Like("ReferedBy", "%" + text + "%", false),
 									new Like("WarrantyLimit", "%" + text + "%", false),
 									new Like("Warranty", "%" + text + "%", false),
@@ -304,6 +335,8 @@ public class TableLayout extends VerticalLayout {
 									new Like("FirstCheckBy", "%" + text + "%", false),
 									new Like("SecondCheckBy", "%" + text + "%", false),
 									new Like("Media", "%" + text + "%", false),
+
+									new Like("Media2", "%" + text + "%", false),
 									new Like("ReferedBy", "%" + text + "%", false),
 									new Like("WarrantyLimit", "%" + text + "%", false),
 									new Like("Warranty", "%" + text + "%", false),
@@ -330,6 +363,62 @@ public class TableLayout extends VerticalLayout {
 									new Like("FirstCheckBy", "%" + text + "%", false),
 									new Like("SecondCheckBy", "%" + text + "%", false),
 									new Like("Media", "%" + text + "%", false),
+									new Like("Media2", "%" + text + "%", false),
+									new Like("ReferedBy", "%" + text + "%", false),
+									new Like("WarrantyLimit", "%" + text + "%", false),
+									new Like("Warranty", "%" + text + "%", false),
+									new Like("No", "%" + text + "%", false), new Like("Tag", "%" + text + "%", false),
+									new Like("Mileage", "%" + text + "%", false))
+
+							);
+							break;
+						
+						case "Pending":
+							fillTable("Cars Pending");
+							searchTextField.setValue(text);
+							container.addContainerFilter(new Or(new Like("Phone", "%" + text + "%", false),
+									new Like("Name", "%" + text + "%", false),
+									new Like("Vehicle", "%" + text + "%", false),
+									new Like("LicensePlate", "%" + text + "%", false),
+									new Like("Vin", "%" + text + "%", false),
+									new Like("LicensePlate", "%" + text + "%", false),
+									new Like("Status", "%" + text + "%", false),
+									new Like("Picked", "%" + text + "%", false),
+									new Like("Payment", "%" + text + "%", false),
+									new Like("Remarks", "%" + text + "%", false),
+									new Like("Rebuilder", "%" + text + "%", false),
+									new Like("Installer", "%" + text + "%", false),
+									new Like("FirstCheckBy", "%" + text + "%", false),
+									new Like("SecondCheckBy", "%" + text + "%", false),
+									new Like("Media", "%" + text + "%", false),
+									new Like("Media2", "%" + text + "%", false),
+									new Like("ReferedBy", "%" + text + "%", false),
+									new Like("WarrantyLimit", "%" + text + "%", false),
+									new Like("Warranty", "%" + text + "%", false),
+									new Like("No", "%" + text + "%", false), new Like("Tag", "%" + text + "%", false),
+									new Like("Mileage", "%" + text + "%", false))
+
+							);
+							break;
+						case "Comeback":
+							fillTable("Cars Comeback");
+							searchTextField.setValue(text);
+							container.addContainerFilter(new Or(new Like("Phone", "%" + text + "%", false),
+									new Like("Name", "%" + text + "%", false),
+									new Like("Vehicle", "%" + text + "%", false),
+									new Like("LicensePlate", "%" + text + "%", false),
+									new Like("Vin", "%" + text + "%", false),
+									new Like("LicensePlate", "%" + text + "%", false),
+									new Like("Status", "%" + text + "%", false),
+									new Like("Picked", "%" + text + "%", false),
+									new Like("Payment", "%" + text + "%", false),
+									new Like("Remarks", "%" + text + "%", false),
+									new Like("Rebuilder", "%" + text + "%", false),
+									new Like("Installer", "%" + text + "%", false),
+									new Like("FirstCheckBy", "%" + text + "%", false),
+									new Like("SecondCheckBy", "%" + text + "%", false),
+									new Like("Media", "%" + text + "%", false),
+									new Like("Media2", "%" + text + "%", false),
 									new Like("ReferedBy", "%" + text + "%", false),
 									new Like("WarrantyLimit", "%" + text + "%", false),
 									new Like("Warranty", "%" + text + "%", false),
@@ -605,6 +694,81 @@ public class TableLayout extends VerticalLayout {
 	}
 	
 	
+	private void buildDataEntry(){
+		final Window subWindow = new Window();
+		subWindow.setModal(true);
+		subWindow.setHeight("500px");
+		subWindow.setWidth("450px");
+		subWindow.setCaption("Insert New Product");
+		subWindow.setStyleName(ValoTheme.WINDOW_TOP_TOOLBAR);
+		subWindow.setClosable(false);
+		subWindow.setResizable(false);
+		
+		FormLayout formLayout = new FormLayout();
+	 
+		formLayout.setMargin(new MarginInfo(false, true, false, true));
+		formLayout.setSpacing(true);
+		formLayout.setSizeFull();
+		
+		HorizontalLayout layoutButtons = new HorizontalLayout();
+		layoutButtons.setMargin(false);
+		Button sendBtn = new Button("Create");
+		sendBtn.addClickListener(new ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+		
+			}
+		});
+		sendBtn.setImmediate(true);
+		sendBtn.setStyleName(ValoTheme.BUTTON_TINY);
+		sendBtn.addStyleName(ValoTheme.BUTTON_FRIENDLY);
+		Button cancelBtn = new Button("Cancel");
+		cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
+		cancelBtn.addStyleName(ValoTheme.BUTTON_DANGER);
+		cancelBtn.setImmediate(true);
+		cancelBtn.addClickListener(new ClickListener() {
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				subWindow.close();
+
+			}
+		});
+
+		layoutButtons.setSizeUndefined();
+		layoutButtons.setSpacing(true);
+		layoutButtons.addComponents(cancelBtn, sendBtn);
+
+		VerticalLayout layout = new VerticalLayout();
+		layout.setSpacing(true);
+		layout.setMargin(true);
+		layout.addComponent(formLayout);
+		layout.addComponent(layoutButtons);
+		layout.setComponentAlignment(formLayout, Alignment.MIDDLE_CENTER);
+		layout.setComponentAlignment(layoutButtons, Alignment.MIDDLE_RIGHT);
+		layout.setExpandRatio(formLayout, 3);
+
+		layout.setSizeFull();
+
+		subWindow.setContent(layout);
+		subWindow.center();
+
+		getUI().addWindow(subWindow);
+
 	
+	}
+	
+	private ItemClickListener tableClickListener = new ItemClickListener() {
+		
+		@Override
+		public void itemClick(ItemClickEvent event) {
+			System.out.println("listener");
+			if (event.isDoubleClick()) {
+				System.out.println("double click!");
+			}
+			
+		}
+	};
 	
 }
