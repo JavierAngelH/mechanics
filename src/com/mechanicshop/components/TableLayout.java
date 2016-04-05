@@ -80,7 +80,7 @@ public class TableLayout extends VerticalLayout {
 		customizeTable();
 		try {
 			connectionPool = new SimpleJDBCConnectionPool("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/t4l", "root",
-					"");
+					"1234");
 
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block

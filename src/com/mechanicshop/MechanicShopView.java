@@ -65,7 +65,9 @@ public class MechanicShopView extends VerticalLayout implements View {
 				case "Data Entry":
 					removeComponent(tableLayout);
 					removeComponent(smsLayout);
-					addComponent(dataEntryLayout);
+					addComponent(dataEntryLayout);	
+					setExpandRatio(dataEntryLayout, 3);
+
 					break;
 				
 				case "SMS":

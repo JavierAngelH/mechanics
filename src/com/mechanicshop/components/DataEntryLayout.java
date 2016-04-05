@@ -2,8 +2,6 @@ package com.mechanicshop.components;
 
 import javax.annotation.PostConstruct;
 
-import tm.kod.widgets.numberfield.NumberField;
-
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -14,57 +12,69 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.NativeSelect;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PopupDateField;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
 
+import tm.kod.widgets.numberfield.NumberField;
+
 
 @SpringComponent
 @UIScope
-public class DataEntryLayout extends VerticalLayout{
-
+public class DataEntryLayout extends Panel{
+	
+	VerticalLayout mainLayout = new VerticalLayout();
+	HorizontalLayout hLayoutForms = new HorizontalLayout();
 	@PostConstruct
 	void init() {
 		addStyleName(ValoTheme.LAYOUT_WELL);
-		setMargin(true);
+		mainLayout.setMargin(true);
 		setSizeFull();
-		setSpacing(true);
+		mainLayout.setSpacing(true);
+		mainLayout.setSizeUndefined();
 buildLayout();
+setContent(mainLayout);
 	}
 
 	
 	private void buildLayout(){
-		FormLayout formLayout = new FormLayout();
+		FormLayout formLayout1 = new FormLayout();
 		 
-		formLayout.setMargin(new MarginInfo(false, true, false, true));
-		formLayout.setSpacing(true);
-		formLayout.setSizeFull();
+		formLayout1.setMargin(new MarginInfo(false, true, false, true));
+		formLayout1.setSpacing(true);
+		
+		
+		FormLayout formLayout2 = new FormLayout();
+		formLayout2.setMargin(new MarginInfo(false, true, false, true));
+		formLayout2.setSpacing(true);
 		
 		final NumberField tfTag = new NumberField("Tag");
-		tfTag.setRequired(true);
+		
 		tfTag.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		tfTag.setWidth("500px");
 		
 		final TextField tfPhone = new TextField("Phone");
-		tfPhone.setRequired(true);
+		
 		tfPhone.setStyleName(ValoTheme.TEXTFIELD_TINY);
-		
+		tfPhone.setWidth("500px");
 		final TextField tfName = new TextField("Name");
-		tfName.setRequired(true);
-		tfName.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
+		tfName.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		tfName.setWidth("500px");
 		
 		final TextField tfVehicle = new TextField("Vehicle");
-		tfVehicle.setRequired(true);
+		tfVehicle.setWidth("500px");
 		tfVehicle.setStyleName(ValoTheme.TEXTFIELD_TINY);
-		
+	
 		final TextField tfLicensePlate = new TextField("LicensePlate");
-		tfLicensePlate.setRequired(true);
-		tfLicensePlate.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
+		tfLicensePlate.setStyleName(ValoTheme.TEXTFIELD_TINY);
+		tfLicensePlate.setWidth("500px");
 		final TextField tfVin = new TextField("Vin");
-		tfVin.setRequired(true);
+		tfVin.setWidth("500px");
 		tfVin.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final PopupDateField dfInShop = new PopupDateField("InShop");
@@ -72,50 +82,50 @@ buildLayout();
 		dfInShop.addStyleName(ValoTheme.DATEFIELD_TINY);
 		dfInShop.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
 		dfInShop.setInputPrompt("Select");
-		dfInShop.setTextFieldEnabled(false);
+		dfInShop.setWidth("500px");
 		
 		final PopupDateField dfOutShop = new PopupDateField("OutShop");
 		dfOutShop.setImmediate(true);
 		dfOutShop.addStyleName(ValoTheme.DATEFIELD_TINY);
 		dfOutShop.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
 		dfOutShop.setInputPrompt("Select");
-		dfOutShop.setTextFieldEnabled(false);
+		dfOutShop.setWidth("500px");
 	
 		final TextField tfStatus = new TextField("Status");
-		tfStatus.setRequired(true);
+		tfStatus.setWidth("500px");
 		tfStatus.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final NumberField tfMileage = new NumberField("Mileage");
-		tfMileage.setRequired(true);
+		tfMileage.setWidth("500px");
 		tfMileage.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final TextField tfPicked = new TextField("Picked");
-		tfPicked.setRequired(true);
+		tfPicked.setWidth("500px");
 		tfPicked.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final TextField tfPayment = new TextField("Payment");
-		tfPayment.setRequired(true);
+		tfPayment.setWidth("500px");
 		tfPayment.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final TextField tfRemarks = new TextField("Remarks");
-		tfRemarks.setRequired(true);
+		tfRemarks.setWidth("500px");
 		tfRemarks.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final TextField tfRebuilder = new TextField("Rebuilder");
-		tfRebuilder.setRequired(true);
+		tfRebuilder.setWidth("500px");
 		tfRebuilder.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 
 		final TextField tfInstaller = new TextField("Installer");
-		tfInstaller.setRequired(true);
+		tfInstaller.setWidth("500px");
 		tfInstaller.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final TextField tfFirstCheckBy = new TextField("FirstCheckBy");
-		tfFirstCheckBy.setRequired(true);
+		tfFirstCheckBy.setWidth("500px");
 		tfFirstCheckBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final TextField tfSecondCheckBy = new TextField("SecondCheckBy");
-		tfSecondCheckBy.setRequired(true);
+		tfSecondCheckBy.setWidth("500px");
 		tfSecondCheckBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final PopupDateField dfFirstCheckDate = new PopupDateField("FirstCheckDate");
@@ -123,59 +133,57 @@ buildLayout();
 		dfFirstCheckDate.addStyleName(ValoTheme.DATEFIELD_TINY);
 		dfFirstCheckDate.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
 		dfFirstCheckDate.setInputPrompt("Select");
-		dfFirstCheckDate.setTextFieldEnabled(false);
+		dfFirstCheckDate.setWidth("500px");
 		
 		final PopupDateField dfSecondCheckDate = new PopupDateField("SecondCheckDate");
 		dfSecondCheckDate.setImmediate(true);
 		dfSecondCheckDate.addStyleName(ValoTheme.DATEFIELD_TINY);
-		dfSecondCheckDate.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
 		dfSecondCheckDate.setInputPrompt("Select");
-		dfSecondCheckDate.setTextFieldEnabled(false);
+		dfSecondCheckDate.setWidth("500px");
 	
 		
 		final TextArea taMedia = new TextArea("Media");
-		taMedia.setRequired(true);
+		taMedia.setWidth("500px");
 		taMedia.setStyleName(ValoTheme.TEXTFIELD_TINY);
 
 		
 		final TextArea taMedia2 = new TextArea("Media2");
-		taMedia2.setRequired(true);
+		taMedia2.setWidth("500px");
 		taMedia2.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 	
 		final TextField tfReferedBy = new TextField("ReferedBy");
-		tfReferedBy.setRequired(true);
+		tfReferedBy.setWidth("500px");
 		tfReferedBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 		final TextField tfWarrantyLimit = new TextField("WarrantyLimit");
-		tfWarrantyLimit.setRequired(true);
+		tfWarrantyLimit.setWidth("500px");
 		tfWarrantyLimit.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 
 		final NativeSelect nsWarranty = new NativeSelect("Warranty");
-		nsWarranty.setRequired(true);
+		nsWarranty.setWidth("500px");
 		nsWarranty.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		nsWarranty.addItems("Yes", "No");
 		
 		
 		final NativeSelect nsSMS = new NativeSelect("SMS");
-		nsSMS.setRequired(true);
+		nsSMS.setWidth("500px");
 		nsSMS.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		nsSMS.addItems("Yes", "No");
 		
 		
 		final NativeSelect nsComeback = new NativeSelect("Comeback");
-		nsComeback.setRequired(true);
+		nsComeback.setWidth("500px");
 		nsComeback.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		nsComeback.addItems("Yes", "No");
 		
 	
-		formLayout.addComponents(tfTag, tfPhone, tfName, tfVehicle, tfLicensePlate, tfVin, dfInShop, dfOutShop,
-				tfStatus, tfMileage, tfPicked, tfPayment, tfRemarks, tfRebuilder, tfInstaller, tfFirstCheckBy,
-				tfSecondCheckBy, dfFirstCheckDate, dfSecondCheckDate, taMedia, taMedia2, tfReferedBy,
-				tfWarrantyLimit, nsWarranty, nsSMS, nsComeback);
+		formLayout1.addComponents(tfTag, tfPhone, tfName, tfVehicle, tfLicensePlate, tfVin, dfInShop, dfOutShop,
+				tfStatus, tfMileage, tfPicked, tfPayment, tfRemarks, tfRebuilder, tfInstaller, tfFirstCheckBy);
 		
-
+		formLayout2.addComponents(tfSecondCheckBy, dfFirstCheckDate, dfSecondCheckDate, taMedia, taMedia2, tfReferedBy,
+				tfWarrantyLimit, nsWarranty, nsSMS, nsComeback);
 
 		
 
@@ -210,12 +218,13 @@ buildLayout();
 		layoutButtons.setSpacing(true);
 		layoutButtons.addComponents(cancelBtn, sendBtn);
 
-	
-		addComponent(formLayout);
-		addComponent(layoutButtons);
-		setComponentAlignment(formLayout, Alignment.MIDDLE_CENTER);
-		setComponentAlignment(layoutButtons, Alignment.MIDDLE_RIGHT);
-		setExpandRatio(formLayout, 3);
+		hLayoutForms.addComponents(formLayout1, formLayout2);
+		
+		mainLayout.addComponent(hLayoutForms);
+		mainLayout.addComponent(layoutButtons);
+		mainLayout.setComponentAlignment(hLayoutForms, Alignment.MIDDLE_CENTER);
+		mainLayout.setComponentAlignment(layoutButtons, Alignment.MIDDLE_RIGHT);
+		mainLayout.setExpandRatio(hLayoutForms, 3);
 
 	}
 }
