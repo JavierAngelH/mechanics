@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.mechanicshop.service.SearchService;
 import com.mechanicshop.service.SmsSenderService;
 import com.vaadin.data.Container;
+import com.vaadin.data.Item;
 import com.vaadin.data.Property;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
@@ -21,8 +22,7 @@ import com.vaadin.data.util.sqlcontainer.connection.SimpleJDBCConnectionPool;
 import com.vaadin.data.util.sqlcontainer.query.TableQuery;
 import com.vaadin.event.FieldEvents.TextChangeEvent;
 import com.vaadin.event.FieldEvents.TextChangeListener;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
+import com.vaadin.server.FontAwesome;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -33,7 +33,6 @@ import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CheckBox;
 import com.vaadin.ui.Component;
 import com.vaadin.ui.Field;
-import com.vaadin.ui.Form;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
@@ -62,6 +61,9 @@ public class TableLayout extends VerticalLayout {
 	@Autowired
 	SmsSenderService smsSenderService;
 
+	@Autowired
+	DataEntryLayout dataEntryLayout;
+	
 	SimpleJDBCConnectionPool connectionPool;
 	Table table = new Table();
 
@@ -138,7 +140,7 @@ public class TableLayout extends VerticalLayout {
 		table.setColumnHeaders(new String[] { "No", "Tag", "Phone", "Name", "Vehicle", "License Plate", "Vin",
 				"In Shop", "Out Shop", "Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer",
 				"First Check By", "Second Check By", "First Check Date", "Second Check Date", "Media" , "Media 2", "Refered By",
-				"Warranty Limit", "Warranty", "SMS Sent", "Comeback", "" });
+				"Warranty Limit", "Warranty", "SMS Sent", "Comeback", "", " " });
 
 		table.setColumnWidth("", 35);
 		table.setColumnWidth("No", 60);
@@ -166,17 +168,16 @@ public class TableLayout extends VerticalLayout {
 		table.setColumnWidth("SecondCheckDate", 150);
 		table.setColumnWidth("SMS", 85);
 		table.setColumnWidth("Comeback", 85);
-		table.setVisibleColumns("", "No", "Tag", "Phone", "Name", "Vehicle", "LicensePlate", "Vin", "InShop", "OutShop",
+		table.setVisibleColumns("", " ", "No", "Tag", "Phone", "Name", "Vehicle", "LicensePlate", "Vin", "InShop", "OutShop",
 				"Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer", "FirstCheckBy",
 				"SecondCheckBy", "FirstCheckDate", "SecondCheckDate", "Media", "Media2", "ReferedBy", "WarrantyLimit",
 				"Warranty", "Comeback");
 		if (option.equals("Cars Ready"))
-			table.setVisibleColumns("", "No", "Tag", "Phone", "Name", "Vehicle", "LicensePlate", "Vin", "InShop",
+			table.setVisibleColumns("", " ", "No", "Tag", "Phone", "Name", "Vehicle", "LicensePlate", "Vin", "InShop",
 					"OutShop", "Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer",
 					"FirstCheckBy", "SecondCheckBy", "FirstCheckDate", "SecondCheckDate", "Media", "Media2", "ReferedBy",
 					"WarrantyLimit", "Warranty", "Comeback", "SMS");
 		table.setTableFieldFactory(tableFactory);
-		table.addItemClickListener(tableClickListener);
 
 	}
 
@@ -617,9 +618,48 @@ public class TableLayout extends VerticalLayout {
 				return cb;
 			}
 		});
+		
+		table.addGeneratedColumn(" ", new Table.ColumnGenerator() {
+
+			@Override
+			public Object generateCell(final Table source, final Object itemId, Object columnId) {
+				Button icon = new Button();
+				icon.setStyleName(ValoTheme.BUTTON_ICON_ONLY);
+				icon.addStyleName(ValoTheme.BUTTON_TINY);
+				icon.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+				icon.setVisible(true);
+				icon.setImmediate(true);
+				icon.setDescription("Details");
+				icon.setIcon(FontAwesome.PENCIL);
+				icon.addClickListener(new ClickListener() {
+					
+					@Override
+					public void buttonClick(ClickEvent event) {
+						Item item = source.getItem(itemId);
+						showDataEntryWindow(item);
+					}
+				});
+				return icon;
+			}
+		});
 
 	}
 	
+	
+	void showDataEntryWindow(Item item){
+		final Window subWindow = new Window();
+		subWindow.setModal(true);
+		subWindow.setHeight("98%");
+		subWindow.setWidth("98%");
+		subWindow.setCaption("Edit Entry");
+		subWindow.setStyleName(ValoTheme.WINDOW_TOP_TOOLBAR);
+		subWindow.setClosable(true);
+		subWindow.setResizable(false);
+		dataEntryLayout.fillDataEntry(item);
+		subWindow.setContent(dataEntryLayout);
+		subWindow.center();
+		getUI().addWindow(subWindow);
+	}
 	
 	public void createCustomMessage(){
 		final TextArea textArea = new TextArea();
@@ -759,16 +799,6 @@ public class TableLayout extends VerticalLayout {
 	
 	}
 	
-	private ItemClickListener tableClickListener = new ItemClickListener() {
-		
-		@Override
-		public void itemClick(ItemClickEvent event) {
-			System.out.println("listener");
-			if (event.isDoubleClick()) {
-				System.out.println("double click!");
-			}
-			
-		}
-	};
+
 	
 }
