@@ -97,7 +97,7 @@ public class MechanicShopView extends VerticalLayout implements View {
 		barmenu.addItem("Cars Out", FontAwesome.ARROW_LEFT, mycommand);
 		barmenu.addItem("Cars Ready", FontAwesome.CAR, mycommand);
 		barmenu.addItem("SMS", FontAwesome.ENVELOPE, mycommand);
-		barmenu.addItem("Data Entry", FontAwesome.ARCHIVE, mycommand);
+		barmenu.addItem("Data Entry", FontAwesome.FILE_O, mycommand);
 	}
 
 

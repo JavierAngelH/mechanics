@@ -1,7 +1,10 @@
 package com.mechanicshop.components;
 
+import java.util.Date;
+
 import javax.annotation.PostConstruct;
 
+import com.vaadin.data.Item;
 import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
@@ -28,6 +31,35 @@ public class DataEntryLayout extends Panel{
 	
 	VerticalLayout mainLayout = new VerticalLayout();
 	HorizontalLayout hLayoutForms = new HorizontalLayout();
+	
+
+	final NumberField tfTag = new NumberField("Tag");
+	final TextField tfPhone = new TextField("Phone");
+	final TextField tfName = new TextField("Name");
+	final TextField tfVehicle = new TextField("Vehicle");
+	final TextField tfLicensePlate = new TextField("LicensePlate");
+	final TextField tfVin = new TextField("Vin");
+	final PopupDateField dfInShop = new PopupDateField("InShop");
+	final PopupDateField dfOutShop = new PopupDateField("OutShop");
+	final NativeSelect nsStatus = new NativeSelect("Status");
+	final NumberField tfMileage = new NumberField("Mileage");
+	final TextField tfPicked = new TextField("Picked");
+	final TextField tfPayment = new TextField("Payment");
+	final TextArea taRemarks = new TextArea("Remarks");
+	final TextField tfRebuilder = new TextField("Rebuilder");
+	final TextField tfInstaller = new TextField("Installer");
+	final TextField tfFirstCheckBy = new TextField("FirstCheckBy");
+	final TextField tfSecondCheckBy = new TextField("SecondCheckBy");
+	final PopupDateField dfFirstCheckDate = new PopupDateField("FirstCheckDate");
+	final PopupDateField dfSecondCheckDate = new PopupDateField("SecondCheckDate");
+	final TextArea taMedia = new TextArea("Media");
+	final TextArea taMedia2 = new TextArea("Media2");
+	final TextField tfReferedBy = new TextField("ReferedBy");	
+	final TextField tfWarrantyLimit = new TextField("WarrantyLimit");
+	final NativeSelect nsWarranty = new NativeSelect("Warranty");
+	final NativeSelect nsSMS = new NativeSelect("SMS");
+	final NativeSelect nsComeback = new NativeSelect("Comeback");
+	
 	@PostConstruct
 	void init() {
 		addStyleName(ValoTheme.LAYOUT_WELL);
@@ -56,136 +88,115 @@ setContent(mainLayout);
 		formLayout3.setSpacing(true);
 		
 		
-		final NumberField tfTag = new NumberField("Tag");
 		
 		tfTag.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		tfTag.setWidth("200px");
 		
-		final TextField tfPhone = new TextField("Phone");
 		
 		tfPhone.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		tfPhone.setWidth("200px");
-		final TextField tfName = new TextField("Name");
 		
 		tfName.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		tfName.setWidth("200px");
 		
-		final TextField tfVehicle = new TextField("Vehicle");
 		tfVehicle.setWidth("200px");
 		tfVehicle.setStyleName(ValoTheme.TEXTFIELD_TINY);
 	
-		final TextField tfLicensePlate = new TextField("LicensePlate");
 		
 		tfLicensePlate.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		tfLicensePlate.setWidth("200px");
-		final TextField tfVin = new TextField("Vin");
+		
 		tfVin.setWidth("200px");
 		tfVin.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final PopupDateField dfInShop = new PopupDateField("InShop");
 		dfInShop.setImmediate(true);
 		dfInShop.addStyleName(ValoTheme.DATEFIELD_TINY);
 		dfInShop.setInputPrompt("Select");
 		dfInShop.setWidth("200px");
 		
-		final PopupDateField dfOutShop = new PopupDateField("OutShop");
 		dfOutShop.setImmediate(true);
 		dfOutShop.addStyleName(ValoTheme.DATEFIELD_TINY);
 		dfOutShop.setInputPrompt("Select");
 		dfOutShop.setWidth("200px");
 	
-		final TextField tfStatus = new TextField("Status");
-		tfStatus.setWidth("200px");
-		tfStatus.setStyleName(ValoTheme.TEXTFIELD_TINY);
+			
+		nsStatus.addItems("In", "Out", "Pending", "Ready", "Comeback");
+		nsStatus.setImmediate(true);
+		nsStatus.setWidth("200px");
+		nsStatus.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final NumberField tfMileage = new NumberField("Mileage");
 		tfMileage.setWidth("200px");
 		tfMileage.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final TextField tfPicked = new TextField("Picked");
 		tfPicked.setWidth("200px");
 		tfPicked.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final TextField tfPayment = new TextField("Payment");
 		tfPayment.setWidth("200px");
 		tfPayment.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 			
-		final TextArea taRemarks = new TextArea("Remarks");
 		taRemarks.setWidth("500px");
 		taRemarks.setStyleName(ValoTheme.TEXTFIELD_TINY);
 
 		
 		
-		final TextField tfRebuilder = new TextField("Rebuilder");
 		tfRebuilder.setWidth("200px");
 		tfRebuilder.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 
-		final TextField tfInstaller = new TextField("Installer");
 		tfInstaller.setWidth("200px");
 		tfInstaller.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final TextField tfFirstCheckBy = new TextField("FirstCheckBy");
 		tfFirstCheckBy.setWidth("500px");
 		tfFirstCheckBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final TextField tfSecondCheckBy = new TextField("SecondCheckBy");
 		tfSecondCheckBy.setWidth("500px");
 		tfSecondCheckBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final PopupDateField dfFirstCheckDate = new PopupDateField("FirstCheckDate");
 		dfFirstCheckDate.setImmediate(true);
 		dfFirstCheckDate.addStyleName(ValoTheme.DATEFIELD_TINY);
 		dfFirstCheckDate.setInputPrompt("Select");
 		dfFirstCheckDate.setWidth("500px");
 		
-		final PopupDateField dfSecondCheckDate = new PopupDateField("SecondCheckDate");
 		dfSecondCheckDate.setImmediate(true);
 		dfSecondCheckDate.addStyleName(ValoTheme.DATEFIELD_TINY);
 		dfSecondCheckDate.setInputPrompt("Select");
 		dfSecondCheckDate.setWidth("500px");
 	
 		
-		final TextArea taMedia = new TextArea("Media");
 		taMedia.setWidth("500px");
 		taMedia.setStyleName(ValoTheme.TEXTFIELD_TINY);
 
 		
-		final TextArea taMedia2 = new TextArea("Media2");
 		taMedia2.setWidth("500px");
 		taMedia2.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 	
-		final TextField tfReferedBy = new TextField("ReferedBy");
 		tfReferedBy.setWidth("200px");
 		tfReferedBy.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
-		final TextField tfWarrantyLimit = new TextField("WarrantyLimit");
 		tfWarrantyLimit.setWidth("200px");
 		tfWarrantyLimit.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		
 
-		final NativeSelect nsWarranty = new NativeSelect("Warranty");
+	
 		nsWarranty.setWidth("200px");
 		nsWarranty.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		nsWarranty.addItems("Yes", "No");
 		
 		
-		final NativeSelect nsSMS = new NativeSelect("SMS");
 		nsSMS.setWidth("200px");
 		nsSMS.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		nsSMS.addItems("Yes", "No");
 		
 		
-		final NativeSelect nsComeback = new NativeSelect("Comeback");
 		nsComeback.setWidth("200px");
 		nsComeback.setStyleName(ValoTheme.TEXTFIELD_TINY);
 		nsComeback.addItems("Yes", "No");
 		
 	
 		formLayout1.addComponents(tfTag, tfPhone, tfName, tfVehicle, tfLicensePlate, tfVin, dfInShop, dfOutShop,
-				tfStatus);
+				nsStatus);
 		
 		formLayout2.addComponents(tfReferedBy, tfWarrantyLimit, nsWarranty, nsSMS, nsComeback, tfPayment, tfRebuilder, tfInstaller, tfMileage, tfPicked );
 		
@@ -232,4 +243,34 @@ setContent(mainLayout);
 		mainLayout.setExpandRatio(hLayoutForms, 3);
 
 	}
+	
+	public void fillDataEntry(Item item){
+		tfFirstCheckBy.setValue(item.getItemProperty("FirstCheckBy").toString());
+		tfInstaller.setValue(item.getItemProperty("Installer").toString());
+		taMedia.setValue(item.getItemProperty("Media").toString());
+		taMedia2.setValue(item.getItemProperty("Media2").toString());
+		taRemarks.setValue(item.getItemProperty("Remarks").toString());
+		tfLicensePlate.setValue(item.getItemProperty("LicensePlate").toString());
+		tfMileage.setValue(item.getItemProperty("Mileage").toString());
+		tfName.setValue(item.getItemProperty("Name").toString());
+		tfPayment.setValue(item.getItemProperty("Payment").toString());
+		tfPhone.setValue(item.getItemProperty("Phone").toString());
+		tfPicked.setValue(item.getItemProperty("Picked").toString());
+		tfRebuilder.setValue(item.getItemProperty("Rebuilder").toString());
+		tfReferedBy.setValue(item.getItemProperty("ReferedBy").toString());
+		tfSecondCheckBy.setValue(item.getItemProperty("SecondCheckBy").toString());
+		tfTag.setValue(item.getItemProperty("Tag").toString());
+		tfVehicle.setValue(item.getItemProperty("Vehicle").toString());
+		tfVin.setValue(item.getItemProperty("Vin").toString());
+		tfWarrantyLimit.setValue(item.getItemProperty("WarrantyLimit").toString());
+		nsComeback.setValue(item.getItemProperty("Comeback").toString());
+		nsSMS.setValue(item.getItemProperty("SMS").toString());
+		nsStatus.setValue(item.getItemProperty("Status").toString());
+		nsWarranty.setValue(item.getItemProperty("Warranty").toString());
+		dfFirstCheckDate.setValue((Date) item.getItemProperty("FirstCheckDate").getValue());
+		dfInShop.setValue((Date)item.getItemProperty("InShop").getValue());
+		dfOutShop.setValue((Date)item.getItemProperty("OutShop").getValue());
+		dfSecondCheckDate.setValue((Date)item.getItemProperty("SecondCheckDate").getValue());
+	}
+	
 }
