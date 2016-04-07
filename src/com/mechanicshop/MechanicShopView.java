@@ -5,6 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.mechanicshop.components.DataEntryLayout;
+import com.mechanicshop.components.MaintenanceLayout;
 import com.mechanicshop.components.SmsLayout;
 import com.mechanicshop.components.TableLayout;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
@@ -36,6 +37,9 @@ public class MechanicShopView extends VerticalLayout implements View {
 	@Autowired
 	DataEntryLayout dataEntryLayout;
 	
+	@Autowired
+	MaintenanceLayout maintenanceLayout;
+	
 
 	@PostConstruct
     void init() {
@@ -65,6 +69,7 @@ public class MechanicShopView extends VerticalLayout implements View {
 				case "Data Entry":
 					removeComponent(tableLayout);
 					removeComponent(smsLayout);
+					removeComponent(maintenanceLayout);
 					addComponent(dataEntryLayout);	
 					setExpandRatio(dataEntryLayout, 3);
 
@@ -73,14 +78,24 @@ public class MechanicShopView extends VerticalLayout implements View {
 				case "SMS":
 					removeComponent(tableLayout);
 					removeComponent(dataEntryLayout);
+					removeComponent(maintenanceLayout);
 					addComponent(smsLayout);
 					setExpandRatio(smsLayout, 3);
 					smsLayout.fillInbox();
+					break;
+				case "Maintenance":
+					removeComponent(tableLayout);
+					removeComponent(dataEntryLayout);
+					removeComponent(smsLayout);
+					addComponent(maintenanceLayout);
+					setExpandRatio(maintenanceLayout, 3);
+				
 					break;
 				default:
 					tableLayout.fillTable(selectedOption);
 					removeComponent(smsLayout);
 					removeComponent(dataEntryLayout);
+					removeComponent(maintenanceLayout);
 					addComponent(tableLayout);
 					setExpandRatio(tableLayout, 3);
 					break;
@@ -97,7 +112,8 @@ public class MechanicShopView extends VerticalLayout implements View {
 		barmenu.addItem("Cars Out", FontAwesome.ARROW_LEFT, mycommand);
 		barmenu.addItem("Cars Ready", FontAwesome.CAR, mycommand);
 		barmenu.addItem("SMS", FontAwesome.ENVELOPE, mycommand);
-		barmenu.addItem("Data Entry", FontAwesome.FILE_O, mycommand);
+		barmenu.addItem("Data Entry", FontAwesome.PENCIL, mycommand);
+		barmenu.addItem("Maintenance", FontAwesome.BOOK,mycommand);
 	}
 
 

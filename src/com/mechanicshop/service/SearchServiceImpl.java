@@ -12,6 +12,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.sun.xml.internal.messaging.saaj.util.Base64;
 import com.twilio.sdk.TwilioRestException;
 
 
@@ -101,6 +102,45 @@ public class SearchServiceImpl implements SearchService {
 		
 			
 		return resultList;
+	}
+
+	@Override
+	public boolean validatePassword(String password) {
+		String sql = "SELECT adminPassword FROM parameters ";
+		Connection conn = null;
+
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			
+			ResultSet rs = ps.executeQuery();
+			
+			String	encodedPassword = rs.getString("adminPassword");
+		String decodedPassword = Base64.base64Decode(encodedPassword);
+			if(decodedPassword.equals(password))
+				return true;
+			rs.close();
+			ps.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		 finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return false;
+	}
+
+	@Override
+	public void updatePassword(String password) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
