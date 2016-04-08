@@ -6,14 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.sun.xml.internal.messaging.saaj.util.Base64;
-import com.twilio.sdk.TwilioRestException;
 
 
 
@@ -108,18 +104,77 @@ public class SearchServiceImpl implements SearchService {
 	public boolean validatePassword(String password) {
 		String sql = "SELECT AdminPassword FROM parameters ";
 		Connection conn = null;
-
+		String encodedPassword = null;
 		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
 			
 			ResultSet rs = ps.executeQuery();
 			while (rs.next()) {
-				String	encodedPassword = rs.getString("AdminPassword");
-				String decodedPassword = Base64.base64Decode(encodedPassword);
-					if(decodedPassword.equals(password))
-						return true;
+					encodedPassword = rs.getString("AdminPassword");
+			}
+			rs.close();
+			ps.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		 finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		String decodedPassword = Base64.base64Decode(encodedPassword);
+		if(decodedPassword.equals(password))
+			return true;
+		return false;
+	}
+
+	@Override
+	public void updatePassword(String password) {
+		byte[] encodedBytes = Base64.encode(password.getBytes());
+		String encodedPassword = new String(encodedBytes);
+		String sql = "UPDATE parameters SET AdminPassword = ?";
+		Connection conn = null;
+
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, encodedPassword);
+			ps.executeUpdate();
+		
+			ps.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		 finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+	}
+
+	@Override
+	public String getMedia1() {
+		String sql = "SELECT DefaultMedia1 FROM parameters ";
+		Connection conn = null;
+		String media = null;
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
 			
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				media = rs.getString("DefaultMedia1");
+							
 			}
 			
 		
@@ -138,19 +193,53 @@ public class SearchServiceImpl implements SearchService {
 			}
 		}
 		
-		return false;
+		return media;
 	}
 
 	@Override
-	public void updatePassword(String password) {
-		String sql = "UPDATE parameters SET AdminPassword = " + password;
+	public String getMedia2() {
+		String sql = "SELECT DefaultMedia2 FROM parameters ";
+		Connection conn = null;
+		String media = null;
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				media = rs.getString("DefaultMedia2");
+							
+			}
+			
+		
+			rs.close();
+			ps.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		 finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+		
+		return media;
+	}
+
+	@Override
+	public void updateMedia1(String text) {
+		String sql = "UPDATE parameters SET DefaultMedia1 = ?";
 		Connection conn = null;
 
 		try {
 			conn = dataSource.getConnection();
 			PreparedStatement ps = conn.prepareStatement(sql);
-			
-			ps.executeQuery();
+			ps.setString(1, text);
+			ps.executeUpdate();
 		
 			ps.close();
 
@@ -166,6 +255,32 @@ public class SearchServiceImpl implements SearchService {
 			}
 		}
 		
+	}
+
+	@Override
+	public void updateMedia2(String text) {
+		String sql = "UPDATE parameters SET DefaultMedia2 = ?";
+		Connection conn = null;
+
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, text);
+			ps.executeUpdate();
+		
+			ps.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		 finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 	}
 
 }

@@ -82,7 +82,7 @@ public class TableLayout extends VerticalLayout {
 		customizeTable();
 		try {
 			connectionPool = new SimpleJDBCConnectionPool("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/t4l", "root",
-					"1234");
+					"");
 
 		} catch (SQLException e1) {
 			// TODO Auto-generated catch block
@@ -734,70 +734,7 @@ public class TableLayout extends VerticalLayout {
 	}
 	
 	
-	private void buildDataEntry(){
-		final Window subWindow = new Window();
-		subWindow.setModal(true);
-		subWindow.setHeight("500px");
-		subWindow.setWidth("450px");
-		subWindow.setCaption("Insert New Product");
-		subWindow.setStyleName(ValoTheme.WINDOW_TOP_TOOLBAR);
-		subWindow.setClosable(false);
-		subWindow.setResizable(false);
-		
-		FormLayout formLayout = new FormLayout();
-	 
-		formLayout.setMargin(new MarginInfo(false, true, false, true));
-		formLayout.setSpacing(true);
-		formLayout.setSizeFull();
-		
-		HorizontalLayout layoutButtons = new HorizontalLayout();
-		layoutButtons.setMargin(false);
-		Button sendBtn = new Button("Create");
-		sendBtn.addClickListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-		
-			}
-		});
-		sendBtn.setImmediate(true);
-		sendBtn.setStyleName(ValoTheme.BUTTON_TINY);
-		sendBtn.addStyleName(ValoTheme.BUTTON_FRIENDLY);
-		Button cancelBtn = new Button("Cancel");
-		cancelBtn.setStyleName(ValoTheme.BUTTON_TINY);
-		cancelBtn.addStyleName(ValoTheme.BUTTON_DANGER);
-		cancelBtn.setImmediate(true);
-		cancelBtn.addClickListener(new ClickListener() {
-
-			@Override
-			public void buttonClick(ClickEvent event) {
-				subWindow.close();
-
-			}
-		});
-
-		layoutButtons.setSizeUndefined();
-		layoutButtons.setSpacing(true);
-		layoutButtons.addComponents(cancelBtn, sendBtn);
-
-		VerticalLayout layout = new VerticalLayout();
-		layout.setSpacing(true);
-		layout.setMargin(true);
-		layout.addComponent(formLayout);
-		layout.addComponent(layoutButtons);
-		layout.setComponentAlignment(formLayout, Alignment.MIDDLE_CENTER);
-		layout.setComponentAlignment(layoutButtons, Alignment.MIDDLE_RIGHT);
-		layout.setExpandRatio(formLayout, 3);
-
-		layout.setSizeFull();
-
-		subWindow.setContent(layout);
-		subWindow.center();
-
-		getUI().addWindow(subWindow);
-
 	
-	}
 	
 
 	

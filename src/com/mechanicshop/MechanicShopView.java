@@ -18,8 +18,9 @@ import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.TextField;
+import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.ValoTheme;
 
 import de.steinwedel.messagebox.MessageBox;
@@ -49,7 +50,7 @@ public class MechanicShopView extends VerticalLayout implements View {
 	@Autowired
 	MaintenanceLayout maintenanceLayout;
 	
-	TextField input = new TextField();
+	PasswordField input = new PasswordField();
 
 	@PostConstruct
     void init() {
@@ -57,14 +58,14 @@ public class MechanicShopView extends VerticalLayout implements View {
 		buildMenu();
 		tableLayout.fillTable("Cars In");
 		addComponents(barmenu, tableLayout);
-
 		setExpandRatio(tableLayout, 3);
     }
 
 
 	private void buildMenu() {
+		
 		barmenu.setImmediate(true);
-		;
+		
 		barmenu.setWidth("100%");
 		barmenu.addStyleName(ValoTheme.MENUBAR_SMALL);
 		barmenu.addStyleName(ValoTheme.MENUBAR_BORDERLESS);
@@ -77,11 +78,18 @@ public class MechanicShopView extends VerticalLayout implements View {
 				switch (selectedOption) {
 				
 				case "Data Entry":
-					removeComponent(tableLayout);
-					removeComponent(smsLayout);
-					removeComponent(maintenanceLayout);
-					addComponent(dataEntryLayout);	
-					setExpandRatio(dataEntryLayout, 3);
+					final Window subWindow = new Window();
+					subWindow.setModal(true);
+					subWindow.setHeight("90%");
+					subWindow.setWidth("90%");
+					subWindow.setCaption("Add Entry");
+					subWindow.setStyleName(ValoTheme.WINDOW_TOP_TOOLBAR);
+					subWindow.setClosable(true);
+					subWindow.setResizable(false);
+					subWindow.setContent(dataEntryLayout);
+					subWindow.center();
+					getUI().addWindow(subWindow);
+	
 
 					break;
 				
@@ -94,9 +102,9 @@ public class MechanicShopView extends VerticalLayout implements View {
 					smsLayout.fillInbox();
 					break;
 				case "Maintenance":
-					MessageBox.createQuestion().withCaption("Type Password").withIcon(null)
-					.withMessage(input)
-					.withOkButton(new Runnable() {
+					input.setStyleName(ValoTheme.TEXTFIELD_TINY);
+					MessageBox.createQuestion().withCaption("Password Required").withIcon(null)
+					.withMessage(input).withCloseButton().withOkButton(new Runnable() {
 
 				@Override
 				public void run() {
@@ -105,9 +113,11 @@ public class MechanicShopView extends VerticalLayout implements View {
 					removeComponent(dataEntryLayout);
 					removeComponent(smsLayout);
 					addComponent(maintenanceLayout);
-					setExpandRatio(maintenanceLayout, 3);}
+					setExpandRatio(maintenanceLayout, 3);
+					}
 					else
 						Notification.show("Wrong Password", Notification.Type.ERROR_MESSAGE);
+					input.clear();
 				}
 			}).open();
 					
