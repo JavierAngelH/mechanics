@@ -106,7 +106,7 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public boolean validatePassword(String password) {
-		String sql = "SELECT adminPassword FROM parameters ";
+		String sql = "SELECT AdminPassword FROM parameters ";
 		Connection conn = null;
 
 		try {
@@ -114,11 +114,15 @@ public class SearchServiceImpl implements SearchService {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			
 			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				String	encodedPassword = rs.getString("AdminPassword");
+				String decodedPassword = Base64.base64Decode(encodedPassword);
+					if(decodedPassword.equals(password))
+						return true;
 			
-			String	encodedPassword = rs.getString("adminPassword");
-		String decodedPassword = Base64.base64Decode(encodedPassword);
-			if(decodedPassword.equals(password))
-				return true;
+			}
+			
+		
 			rs.close();
 			ps.close();
 
@@ -139,7 +143,28 @@ public class SearchServiceImpl implements SearchService {
 
 	@Override
 	public void updatePassword(String password) {
-		// TODO Auto-generated method stub
+		String sql = "UPDATE parameters SET AdminPassword = " + password;
+		Connection conn = null;
+
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			
+			ps.executeQuery();
+		
+			ps.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		 finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
 		
 	}
 

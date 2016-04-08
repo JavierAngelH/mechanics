@@ -8,6 +8,7 @@ import com.mechanicshop.components.DataEntryLayout;
 import com.mechanicshop.components.MaintenanceLayout;
 import com.mechanicshop.components.SmsLayout;
 import com.mechanicshop.components.TableLayout;
+import com.mechanicshop.service.SearchService;
 import com.vaadin.data.util.sqlcontainer.SQLContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
@@ -16,8 +17,12 @@ import com.vaadin.spring.annotation.SpringComponent;
 import com.vaadin.spring.annotation.UIScope;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.Notification;
+import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.themes.ValoTheme;
+
+import de.steinwedel.messagebox.MessageBox;
 
 
 
@@ -31,8 +36,12 @@ public class MechanicShopView extends VerticalLayout implements View {
 	
 	@Autowired
 	SmsLayout smsLayout;
+	
 	@Autowired
 	TableLayout tableLayout;
+	
+	@Autowired
+	SearchService searchService;
 	
 	@Autowired
 	DataEntryLayout dataEntryLayout;
@@ -40,6 +49,7 @@ public class MechanicShopView extends VerticalLayout implements View {
 	@Autowired
 	MaintenanceLayout maintenanceLayout;
 	
+	TextField input = new TextField();
 
 	@PostConstruct
     void init() {
@@ -84,11 +94,23 @@ public class MechanicShopView extends VerticalLayout implements View {
 					smsLayout.fillInbox();
 					break;
 				case "Maintenance":
+					MessageBox.createQuestion().withCaption("Type Password").withIcon(null)
+					.withMessage(input)
+					.withOkButton(new Runnable() {
+
+				@Override
+				public void run() {
+					if(searchService.validatePassword(input.getValue())){
 					removeComponent(tableLayout);
 					removeComponent(dataEntryLayout);
 					removeComponent(smsLayout);
 					addComponent(maintenanceLayout);
-					setExpandRatio(maintenanceLayout, 3);
+					setExpandRatio(maintenanceLayout, 3);}
+					else
+						Notification.show("Wrong Password", Notification.Type.ERROR_MESSAGE);
+				}
+			}).open();
+					
 				
 					break;
 				default:
