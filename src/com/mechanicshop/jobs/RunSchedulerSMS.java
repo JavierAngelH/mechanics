@@ -27,9 +27,7 @@ public class RunSchedulerSMS {
 
     	Map<String, JobParameter> jobDataMap = new HashMap<String, JobParameter>();
     	jobDataMap.put("Date", new JobParameter(new Date())); 
-
-
-    	
+   	
     	JobParameters parameters = new JobParameters(jobDataMap);
 
     	System.out.println("Start sending messages at: " + new Date());

@@ -25,7 +25,7 @@ public class SendSMSTasklet implements Tasklet {
 			 {
 
 		smsSender.sendMessagesMassive();
-		
+		smsSender.sendReminderMessagesMassive();
 		
 		return RepeatStatus.FINISHED;
 	}

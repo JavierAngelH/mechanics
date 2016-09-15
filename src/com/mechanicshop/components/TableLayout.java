@@ -8,6 +8,7 @@ import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
+import com.mechanicshop.service.ConnectionPool;
 import com.mechanicshop.service.SearchService;
 import com.mechanicshop.service.SmsSenderService;
 import com.vaadin.data.Container;
@@ -64,7 +65,10 @@ public class TableLayout extends VerticalLayout {
 	@Autowired
 	DataEntryLayout dataEntryLayout;
 	
-	SimpleJDBCConnectionPool connectionPool;
+	@Autowired
+	ConnectionPool connectionPool;
+	
+	
 	Table table = new Table();
 
 	Label titleLabel = new Label("CARS IN");
@@ -76,18 +80,11 @@ public class TableLayout extends VerticalLayout {
 	@PostConstruct
 	void init() {
 		addStyleName(ValoTheme.LAYOUT_WELL);
+		dataEntryLayout.sendBtn.addClickListener(btnListener);
 		setMargin(true);
 		setSizeFull();
 		buildLayout();
 		customizeTable();
-		try {
-			connectionPool = new SimpleJDBCConnectionPool("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/t4l", "root",
-					"");
-
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
 	}
 
 	public void fillTable(String option) {
@@ -222,6 +219,7 @@ public class TableLayout extends VerticalLayout {
 						if (newValue != null) {
 							if (!currentTable.contains(newValue.toUpperCase())) {
 								container.removeItem(itemId);
+								container.refresh();
 							}
 
 						}
@@ -440,8 +438,6 @@ public class TableLayout extends VerticalLayout {
 
 	};
 
-
-
 	private ClickListener addBtnListener = new ClickListener() {
 
 		@Override
@@ -491,16 +487,19 @@ public class TableLayout extends VerticalLayout {
 		public void buttonClick(ClickEvent event) {
 			int selectedItems = selectedItemIds.size();
 			if (selectedItems > 0) {
-
+				
 				MessageBox.createQuestion().withCaption("Confirm")
 						.withMessage("Do you want to remove " + selectedItems + " car(s)?")
 						.withYesButton(new Runnable() {
 
 					@Override
 					public void run() {
+				
+						
 						for (Object object : selectedItemIds) {
-
+							Item item = table.getItem(object);
 							container.removeItem(object);
+							searchService.insertIntoUnknownTable(item);
 
 						}
 						try {
@@ -636,7 +635,10 @@ public class TableLayout extends VerticalLayout {
 					@Override
 					public void buttonClick(ClickEvent event) {
 						Item item = source.getItem(itemId);
-						showDataEntryWindow(item);
+						dataEntryLayout.fillDataEntry(item, titleLabel.getValue());
+						getUI().addWindow(dataEntryLayout);
+						
+					
 					}
 				});
 				return icon;
@@ -644,23 +646,7 @@ public class TableLayout extends VerticalLayout {
 		});
 
 	}
-	
-	
-	void showDataEntryWindow(Item item){
-		final Window subWindow = new Window();
-		subWindow.setModal(true);
-		subWindow.setHeight("98%");
-		subWindow.setWidth("98%");
-		subWindow.setCaption("Edit Entry");
-		subWindow.setStyleName(ValoTheme.WINDOW_TOP_TOOLBAR);
-		subWindow.setClosable(true);
-		subWindow.setResizable(false);
-		dataEntryLayout.fillDataEntry(item);
-		subWindow.setContent(dataEntryLayout);
-		subWindow.center();
-		getUI().addWindow(subWindow);
-	}
-	
+		
 	public void createCustomMessage(){
 		final TextArea textArea = new TextArea();
 		textArea.setImmediate(true);
@@ -735,7 +721,14 @@ public class TableLayout extends VerticalLayout {
 	
 	
 	
-	
+	ClickListener btnListener = new ClickListener() {
+		
+		@Override
+		public void buttonClick(ClickEvent event) {
+			container.refresh();
+			
+		}
+	};
 
 	
 }

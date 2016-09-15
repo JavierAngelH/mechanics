@@ -54,11 +54,13 @@ public class MechanicShopView extends VerticalLayout implements View {
 
 	@PostConstruct
     void init() {
+		System.out.println("mechanic vew");
 		setSizeFull();
 		buildMenu();
 		tableLayout.fillTable("Cars In");
 		addComponents(barmenu, tableLayout);
 		setExpandRatio(tableLayout, 3);
+		
     }
 
 
@@ -78,24 +80,14 @@ public class MechanicShopView extends VerticalLayout implements View {
 				switch (selectedOption) {
 				
 				case "Data Entry":
-					final Window subWindow = new Window();
-					subWindow.setModal(true);
-					subWindow.setHeight("90%");
-					subWindow.setWidth("90%");
-					subWindow.setCaption("Add Entry");
-					subWindow.setStyleName(ValoTheme.WINDOW_TOP_TOOLBAR);
-					subWindow.setClosable(true);
-					subWindow.setResizable(false);
-					subWindow.setContent(dataEntryLayout);
-					subWindow.center();
-					getUI().addWindow(subWindow);
+					dataEntryLayout.emptyEntry();
+					getUI().addWindow(dataEntryLayout);
 	
 
 					break;
 				
 				case "SMS":
 					removeComponent(tableLayout);
-					removeComponent(dataEntryLayout);
 					removeComponent(maintenanceLayout);
 					addComponent(smsLayout);
 					setExpandRatio(smsLayout, 3);
@@ -110,7 +102,6 @@ public class MechanicShopView extends VerticalLayout implements View {
 				public void run() {
 					if(searchService.validatePassword(input.getValue())){
 					removeComponent(tableLayout);
-					removeComponent(dataEntryLayout);
 					removeComponent(smsLayout);
 					addComponent(maintenanceLayout);
 					setExpandRatio(maintenanceLayout, 3);
@@ -126,7 +117,6 @@ public class MechanicShopView extends VerticalLayout implements View {
 				default:
 					tableLayout.fillTable(selectedOption);
 					removeComponent(smsLayout);
-					removeComponent(dataEntryLayout);
 					removeComponent(maintenanceLayout);
 					addComponent(tableLayout);
 					setExpandRatio(tableLayout, 3);

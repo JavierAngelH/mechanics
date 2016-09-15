@@ -171,4 +171,39 @@ public class SmsSenderServiceImpl implements SmsSenderService {
 
 	}
 
+	@Override
+	public void sendReminderMessagesMassive() {
+		String sql = "select no, phone, media2 from all_tables where DATEDIFF(sysdate(),outshop) = 7 OR DATEDIFF(sysdate(),outshop) = 60";
+		Connection conn = null;
+
+		try {
+			conn = dataSource.getConnection();
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			while (rs.next()) {
+				try {
+
+					sendMessage(rs.getString("Media"), rs.getString("Phone"));
+					sendVoiceMessage(rs.getString("Media"), rs.getString("Phone"));
+				} catch (TwilioRestException e) {
+					e.printStackTrace();
+				}
+			}
+
+			rs.close();
+			ps.close();
+
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		} finally {
+			if (conn != null) {
+				try {
+					conn.close();
+				} catch (SQLException e) {
+				}
+			}
+		}
+
+	}
+
 }

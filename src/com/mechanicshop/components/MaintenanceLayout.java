@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import tm.kod.widgets.numberfield.NumberField;
 
+import com.mechanicshop.service.ConnectionPool;
 import com.mechanicshop.service.SearchService;
 import com.vaadin.data.Container;
 import com.vaadin.data.Item;
@@ -43,7 +44,9 @@ import com.vaadin.ui.themes.ValoTheme;
 @UIScope
 public class MaintenanceLayout extends VerticalLayout {
 	
-	SimpleJDBCConnectionPool connectionPool;
+	@Autowired
+	ConnectionPool connectionPool;
+	
 	Table table = new Table();
 	Label titleLabel = new Label("MAINTENANCE");
 	SQLContainer container = null;
@@ -62,15 +65,8 @@ public class MaintenanceLayout extends VerticalLayout {
 		setSizeFull();
 		buildLayout();
 		customizeTable();
-		
-		try {
-			connectionPool = new SimpleJDBCConnectionPool("com.mysql.jdbc.Driver", "jdbc:mysql://localhost/t4l", "root",
-					"");
-			fillTable();
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		fillTable();
+
 	}
 
 	public void fillTable() {
@@ -82,6 +78,7 @@ public class MaintenanceLayout extends VerticalLayout {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
+		table.setEditable(false);
 		table.setContainerDataSource(container);
 		table.setColumnHeaders(new String[] { "No", "Tag", "Phone", "Name", "Vehicle", "License Plate", "Vin",
 				"In Shop", "Out Shop", "Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer",
@@ -96,8 +93,8 @@ public class MaintenanceLayout extends VerticalLayout {
 		table.setColumnWidth("Vehicle", 150);
 		table.setColumnWidth("LicensePlate", 150);
 		table.setColumnWidth("Vin", 145);
-		table.setColumnWidth("InShop", 90);
-		table.setColumnWidth("OutShop", 90);
+		table.setColumnWidth("InShop", 160);
+		table.setColumnWidth("OutShop", 160);
 		table.setColumnWidth("Status", 120);
 		table.setColumnWidth("Mileage", 90);
 		table.setColumnWidth("Picked", 60);
@@ -110,8 +107,8 @@ public class MaintenanceLayout extends VerticalLayout {
 		table.setColumnWidth("Media2", 300);
 		table.setColumnWidth("WarrantyLimit", 120);
 		table.setColumnWidth("Warranty", 90);
-		table.setColumnWidth("FirstCheckDate", 120);
-		table.setColumnWidth("SecondCheckDate", 150);
+		table.setColumnWidth("FirstCheckDate", 160);
+		table.setColumnWidth("SecondCheckDate", 160);
 		table.setColumnWidth("SMS", 85);
 		table.setColumnWidth("Comeback", 85);
 		table.setColumnWidth("DateDeleted", 180);
@@ -119,100 +116,12 @@ public class MaintenanceLayout extends VerticalLayout {
 					"OutShop", "Status", "Mileage", "Picked", "Payment", "Remarks", "Rebuilder", "Installer",
 					"FirstCheckBy", "SecondCheckBy", "FirstCheckDate", "SecondCheckDate", "Media", "Media2", "ReferedBy",
 					"WarrantyLimit", "Warranty", "Comeback", "SMS");
-		table.setTableFieldFactory(tableFactory);
 		table.setCaption("Deleted Items");
 
 	}
 
 	
 
-	private TableFieldFactory tableFactory = new TableFieldFactory() {
-
-		@Override
-		public Field<?> createField(Container fieldContainer, final Object itemId, Object propertyId,
-				Component uiContext) {
-			String column = (String) propertyId;
-			if (column.equals("InShop") || column.equals("OutShop") || column.equals("FirstCheckDate")
-					|| column.equals("SecondCheckDate")) {
-
-				PopupDateField field = new PopupDateField(column);
-				field.setData(itemId);
-				field.setImmediate(true);
-				field.addStyleName(ValoTheme.DATEFIELD_TINY);
-				field.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
-				field.setInputPrompt("Select");
-				field.setTextFieldEnabled(false);
-				return field;
-			} else if (column.equals("Tag") || column.equals("Mileage")) {
-				NumberField field = new NumberField(column);
-				field.setData(itemId);
-				field.setImmediate(true);
-				field.setSigned(false);
-
-				field.setNullRepresentation("");
-				field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-				field.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-				return field;
-			} else if (column.equals("Status")) {
-				NativeSelect field = new NativeSelect();
-				field.addItems("In", "Out", "Pending", "Ready", "Comeback");
-				field.setImmediate(true);
-				field.addValueChangeListener(new ValueChangeListener() {
-
-					@Override
-					public void valueChange(ValueChangeEvent event) {
-						String newValue = (String) event.getProperty().getValue();
-						String currentTable = titleLabel.getValue();
-						if (newValue != null) {
-							if (!currentTable.contains(newValue.toUpperCase())) {
-								container.removeItem(itemId);
-							}
-
-						}
-					}
-				});
-				return field;
-			} else if (column.equals("Warranty")) {
-				NativeSelect field = new NativeSelect();
-				field.addItems("Yes", "No");
-				field.setImmediate(true);
-				return field;
-			} else if (column.equals("SMS")) {
-				NativeSelect field = new NativeSelect();
-				field.addItems("YES", "NO");
-				field.setImmediate(true);
-				return field;
-			} 
-			else if (column.equals("Comeback")) {
-				NativeSelect field = new NativeSelect();
-				field.addItems("YES", "NO");
-				field.setImmediate(true);
-				return field;
-			} else if (column.equals("DateDeleted")) {
-
-				PopupDateField field = new PopupDateField(column);
-				field.setDateFormat("yyyy/MM/dd hh:mm a");
-				field.setData(itemId);
-				field.setImmediate(true);
-				field.addStyleName(ValoTheme.DATEFIELD_TINY);
-				field.addStyleName(ValoTheme.DATEFIELD_BORDERLESS);
-				field.setInputPrompt("Select");
-				field.setTextFieldEnabled(false);
-				return field;
-			} else {
-				TextField field = new TextField(column);
-				field.setData(itemId);
-				field.setNullRepresentation("");
-				field.setImmediate(true);
-				field.addStyleName(ValoTheme.TEXTFIELD_TINY);
-				field.addStyleName(ValoTheme.TEXTFIELD_BORDERLESS);
-				// field.addValueChangeListener(textfieldListener);
-				return field;
-			} 
-
-		}
-	};
-	
 	
 	private void buildLayout() {
 		HorizontalLayout layoutTitle = new HorizontalLayout();
@@ -312,18 +221,8 @@ public class MaintenanceLayout extends VerticalLayout {
 	
 	
 	void showDataEntryWindow(Item item){
-		final Window subWindow = new Window();
-		subWindow.setModal(true);
-		subWindow.setHeight("98%");
-		subWindow.setWidth("98%");
-		subWindow.setCaption("Edit Entry");
-		subWindow.setStyleName(ValoTheme.WINDOW_TOP_TOOLBAR);
-		subWindow.setClosable(true);
-		subWindow.setResizable(false);
-		dataEntryLayout.fillDataEntry(item);
-		subWindow.setContent(dataEntryLayout);
-		subWindow.center();
-		getUI().addWindow(subWindow);
+		dataEntryLayout.fillDataEntry(item, "cars_unknown");
+		getUI().addWindow(dataEntryLayout);
 	}
 	
 

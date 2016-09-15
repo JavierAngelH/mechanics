@@ -15,4 +15,6 @@ public interface SmsSenderService {
 	void sendMessageMassive(String message);
 	
 	List<Sms> getReceivedMessages();
+	
+	void sendReminderMessagesMassive();
 }
